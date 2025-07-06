@@ -17,7 +17,7 @@ func TestNewBoard(t *testing.T) {
 func TestMakeMove(t *testing.T) {
 	board := NewBoard()
 
-	// Movimiento válido
+	// Valid move
 	if !board.MakeMove(1, 1, "X") {
 		t.Error("Expected valid move to succeed")
 	}
@@ -26,12 +26,12 @@ func TestMakeMove(t *testing.T) {
 		t.Error("Expected X at position [1][1]")
 	}
 
-	// Movimiento inválido (posición ocupada)
+	// Invalid move (position occupied)
 	if board.MakeMove(1, 1, "O") {
 		t.Error("Expected invalid move to fail")
 	}
 
-	// Movimiento inválido (fuera de rango)
+	// Invalid move (out of bounds)
 	if board.MakeMove(5, 5, "X") {
 		t.Error("Expected out of bounds move to fail")
 	}
@@ -66,7 +66,7 @@ func TestSetCell(t *testing.T) {
 func TestCheckWinnerRow(t *testing.T) {
 	board := NewBoard()
 
-	// Test fila ganadora
+	// Test winning row
 	board.MakeMove(0, 0, "X")
 	board.MakeMove(0, 1, "X")
 	board.MakeMove(0, 2, "X")
@@ -80,7 +80,7 @@ func TestCheckWinnerRow(t *testing.T) {
 func TestCheckWinnerColumn(t *testing.T) {
 	board := NewBoard()
 
-	// Test columna ganadora
+	// Test winning column
 	board.MakeMove(0, 0, "O")
 	board.MakeMove(1, 0, "O")
 	board.MakeMove(2, 0, "O")
@@ -94,7 +94,7 @@ func TestCheckWinnerColumn(t *testing.T) {
 func TestCheckWinnerDiagonal(t *testing.T) {
 	board := NewBoard()
 
-	// Test diagonal ganadora
+	// Test winning diagonal
 	board.MakeMove(0, 0, "X")
 	board.MakeMove(1, 1, "X")
 	board.MakeMove(2, 2, "X")
@@ -108,7 +108,7 @@ func TestCheckWinnerDiagonal(t *testing.T) {
 func TestCheckWinnerAntiDiagonal(t *testing.T) {
 	board := NewBoard()
 
-	// Test diagonal inversa ganadora
+	// Test winning anti-diagonal
 	board.MakeMove(0, 2, "O")
 	board.MakeMove(1, 1, "O")
 	board.MakeMove(2, 0, "O")
@@ -122,13 +122,13 @@ func TestCheckWinnerAntiDiagonal(t *testing.T) {
 func TestNoWinner(t *testing.T) {
 	board := NewBoard()
 
-	// Tablero vacío
+	// Empty board
 	winner := board.CheckWinner()
 	if winner != "" {
 		t.Errorf("Expected no winner on empty board, got %s", winner)
 	}
 
-	// Algunos movimientos sin ganador
+	// Some moves, no winner yet
 	board.MakeMove(0, 0, "X")
 	board.MakeMove(1, 1, "O")
 	board.MakeMove(2, 2, "X")
@@ -142,12 +142,12 @@ func TestNoWinner(t *testing.T) {
 func TestIsFull(t *testing.T) {
 	board := NewBoard()
 
-	// Tablero vacío
+	// Empty board
 	if board.IsFull() {
 		t.Error("Expected empty board to not be full")
 	}
 
-	// Llenar tablero sin ganador (empate)
+	// Fill board with no winner (tie)
 	board.MakeMove(0, 0, "X") // X
 	board.MakeMove(0, 1, "O") // O
 	board.MakeMove(0, 2, "X") // X
@@ -162,7 +162,7 @@ func TestIsFull(t *testing.T) {
 		t.Error("Expected full board to be full")
 	}
 
-	// Verificar que no hay ganador (empate real)
+	// Check that there is no winner (real tie)
 	winner := board.CheckWinner()
 	if winner != "" {
 		t.Errorf("Expected no winner in tie game, got %s", winner)
@@ -172,20 +172,20 @@ func TestIsFull(t *testing.T) {
 func TestGetEmptySpots(t *testing.T) {
 	board := NewBoard()
 
-	// Tablero vacío debería tener 9 espacios
+	// Empty board should have 9 spots
 	emptySpots := board.GetEmptySpots()
 	if len(emptySpots) != 9 {
 		t.Errorf("Expected 9 empty spots, got %d", len(emptySpots))
 	}
 
-	// Hacer un movimiento
+	// Make a move
 	board.MakeMove(1, 1, "X")
 	emptySpots = board.GetEmptySpots()
 	if len(emptySpots) != 8 {
 		t.Errorf("Expected 8 empty spots after one move, got %d", len(emptySpots))
 	}
 
-	// Verificar que las coordenadas están correctas
+	// Check that coordinates are correct
 	found := false
 	for _, spot := range emptySpots {
 		if spot[0] == 1 && spot[1] == 1 {
@@ -202,10 +202,10 @@ func TestAIFindWinningMove(t *testing.T) {
 	board := NewBoard()
 	ai := NewAI("O")
 
-	// Configurar tablero para que O pueda ganar en fila
+	// Set up board so O can win in a row
 	board.MakeMove(0, 0, "O")
 	board.MakeMove(0, 1, "O")
-	// board.MakeMove(0, 2, "O") sería la jugada ganadora
+	// board.MakeMove(0, 2, "O") would be the winning move
 
 	row, col, canWin := ai.findWinningMove(board, "O")
 	if !canWin {
@@ -216,7 +216,7 @@ func TestAIFindWinningMove(t *testing.T) {
 		t.Errorf("Expected winning move at (0,2), got (%d,%d)", row, col)
 	}
 
-	// Verificar que el tablero no cambió después de la simulación
+	// Check that the board did not change after simulation
 	if board.GetCell(0, 2) != " " {
 		t.Error("Expected board to be unchanged after findWinningMove")
 	}
@@ -226,10 +226,10 @@ func TestAIFindBlockingMove(t *testing.T) {
 	board := NewBoard()
 	ai := NewAI("O")
 
-	// Configurar tablero para que X pueda ganar (O debe bloquear)
+	// Set up board so X can win (O must block)
 	board.MakeMove(1, 0, "X")
 	board.MakeMove(1, 1, "X")
-	// X puede ganar en (1,2), O debe bloquearlo
+	// X can win at (1,2), O must block
 
 	row, col, mustBlock := ai.findWinningMove(board, "X")
 	if !mustBlock {
