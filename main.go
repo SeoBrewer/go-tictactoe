@@ -3,9 +3,11 @@ package main
 import (
     "bufio"
     "fmt"
+    "math/rand"
     "os"
     "strconv"
     "strings"
+    "time"
 )
 
 func printBoard(board [3][3]string) {
@@ -40,7 +42,63 @@ func getMove(player string) (int, int) {
     return row, col
 }
 
-// Función para verificar si hay ganador
+// Verificar si alguien puede ganar en el próximo movimiento
+func findWinningMove(board [3][3]string, player string) (int, int, bool) {
+    for i := 0; i < 3; i++ {
+        for j := 0; j < 3; j++ {
+            if board[i][j] == " " {
+                // Probar este movimiento
+                board[i][j] = player
+                if checkWinner(board) == player {
+                    board[i][j] = " " // Deshacer
+                    return i, j, true
+                }
+                board[i][j] = " " // Deshacer
+            }
+        }
+    }
+    return 0, 0, false
+}
+
+// IA inteligente
+func getSmartAIMove(board [3][3]string) (int, int) {
+    fmt.Println("🧠 IA está pensando estratégicamente...")
+    time.Sleep(1 * time.Second)
+    
+    // 1. ¿Puede ganar la IA?
+    if row, col, canWin := findWinningMove(board, "O"); canWin {
+        fmt.Printf("🎯 IA va por la victoria: %d,%d\n", row, col)
+        return row, col
+    }
+    
+    // 2. ¿Necesita bloquear al jugador?
+    if row, col, mustBlock := findWinningMove(board, "X"); mustBlock {
+        fmt.Printf("🛡️ IA bloquea tu jugada: %d,%d\n", row, col)
+        return row, col
+    }
+    
+    // 3. Tomar el centro si está libre
+    if board[1][1] == " " {
+        fmt.Printf("🎯 IA toma el centro: 1,1\n")
+        return 1, 1
+    }
+    
+    // 4. Movimiento aleatorio en posiciones disponibles
+    var emptySpots [][2]int
+    for i := 0; i < 3; i++ {
+        for j := 0; j < 3; j++ {
+            if board[i][j] == " " {
+                emptySpots = append(emptySpots, [2]int{i, j})
+            }
+        }
+    }
+    
+    randomIndex := rand.Intn(len(emptySpots))
+    chosen := emptySpots[randomIndex]
+    fmt.Printf("🤖 IA elige: %d,%d\n", chosen[0], chosen[1])
+    return chosen[0], chosen[1]
+}
+
 func checkWinner(board [3][3]string) string {
     // Verificar filas
     for i := 0; i < 3; i++ {
@@ -65,10 +123,12 @@ func checkWinner(board [3][3]string) string {
         return board[0][2]
     }
     
-    return "" // No hay ganador
+    return ""
 }
 
 func main() {
+    rand.Seed(time.Now().UnixNano())
+    
     var board [3][3]string
     currentPlayer := "X"
     
@@ -79,18 +139,30 @@ func main() {
         }
     }
     
-    // Loop principal del juego
+    fmt.Println("🎮 Juegas como X, la IA inteligente es O")
+    fmt.Println("💡 La IA ahora puede ganar y bloquear tus jugadas")
+    
     for {
         printBoard(board)
         
-        row, col := getMove(currentPlayer)
+        var row, col int
+        
+        if currentPlayer == "X" {
+            row, col = getMove(currentPlayer)
+        } else {
+            row, col = getSmartAIMove(board)
+        }
+        
         board[row][col] = currentPlayer
         
-        // Verificar ganador
         winner := checkWinner(board)
         if winner != "" {
             printBoard(board)
-            fmt.Printf("🎉 ¡Jugador %s gana!\n", winner)
+            if winner == "X" {
+                fmt.Println("🎉 ¡Increíble! ¡Ganaste a la IA inteligente!")
+            } else {
+                fmt.Println("🤖 ¡La IA te ha derrotado!")
+            }
             break
         }
         
