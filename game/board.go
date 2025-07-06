@@ -95,3 +95,7 @@ func (b *Board) GetEmptySpots() [][2]int {
 func (b *Board) GetCell(row, col int) string {
 	return b.cells[row][col]
 }
+
+func (b *Board) SetCell(row, col int, value string) {
+	b.cells[row][col] = value
+}

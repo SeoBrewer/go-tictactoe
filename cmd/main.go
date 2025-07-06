@@ -58,7 +58,6 @@ func playGame() {
 		} else {
 			// Verificar si hay movimientos disponibles antes del turno de la IA
 			if board.IsFull() {
-				board.Print()
 				fmt.Println("🤝 ¡Es un empate!")
 				gameOver = true
 				break
@@ -68,7 +67,6 @@ func playGame() {
 			row, col = ai.GetMove(board)
 			if row == -1 && col == -1 {
 				// No hay movimientos disponibles
-				board.Print()
 				fmt.Println("🤝 ¡Es un empate!")
 				gameOver = true
 				break
@@ -89,7 +87,7 @@ func playGame() {
 			break
 		}
 
-		// Verificar empate
+		// Verificar empate (después de cada movimiento)
 		if board.IsFull() {
 			board.Print()
 			fmt.Println("🤝 ¡Es un empate!")

@@ -59,14 +59,14 @@ func (ai *AI) findWinningMove(board *Board, player string) (int, int, bool) {
 		for j := 0; j < 3; j++ {
 			if board.GetCell(i, j) == " " {
 				// Probar este movimiento
-				board.MakeMove(i, j, player)
+				board.SetCell(i, j, player)
 				if board.CheckWinner() == player {
 					// Deshacer el movimiento
-					board.MakeMove(i, j, " ")
+					board.SetCell(i, j, " ")
 					return i, j, true
 				}
 				// Deshacer el movimiento
-				board.MakeMove(i, j, " ")
+				board.SetCell(i, j, " ")
 			}
 		}
 	}
