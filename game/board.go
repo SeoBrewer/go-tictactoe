@@ -43,21 +43,21 @@ func (b *Board) MakeMove(row, col int, player string) bool {
 }
 
 func (b *Board) CheckWinner() string {
-	// Verificar filas
+	// Check rows
 	for i := 0; i < 3; i++ {
 		if b.cells[i][0] != " " && b.cells[i][0] == b.cells[i][1] && b.cells[i][1] == b.cells[i][2] {
 			return b.cells[i][0]
 		}
 	}
 
-	// Verificar columnas
+	// Check columns
 	for j := 0; j < 3; j++ {
 		if b.cells[0][j] != " " && b.cells[0][j] == b.cells[1][j] && b.cells[1][j] == b.cells[2][j] {
 			return b.cells[0][j]
 		}
 	}
 
-	// Verificar diagonales
+	// Check diagonals
 	if b.cells[0][0] != " " && b.cells[0][0] == b.cells[1][1] && b.cells[1][1] == b.cells[2][2] {
 		return b.cells[0][0]
 	}
