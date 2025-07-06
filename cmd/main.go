@@ -41,7 +41,7 @@ func playGame() {
 		var err error
 
 		if currentPlayerIsHuman {
-			// Turno del jugador humano
+			// Human player's turn
 			for {
 				row, col, err = player.GetMove()
 				if err != nil {
@@ -56,17 +56,17 @@ func playGame() {
 				break
 			}
 		} else {
-			// Verificar si hay movimientos disponibles antes del turno de la IA
+			// Check if there are moves available before AI's turn
 			if board.IsFull() {
 				fmt.Println("🤝 ¡Es un empate!")
 				gameOver = true
 				break
 			}
 			
-			// Turno de la IA
+			// AI's turn
 			row, col = ai.GetMove(board)
 			if row == -1 && col == -1 {
-				// No hay movimientos disponibles
+				// No moves available
 				fmt.Println("🤝 ¡Es un empate!")
 				gameOver = true
 				break
@@ -74,7 +74,7 @@ func playGame() {
 			board.MakeMove(row, col, "O")
 		}
 
-		// Verificar ganador
+		// Check for winner
 		winner := board.CheckWinner()
 		if winner != "" {
 			board.Print()
@@ -87,7 +87,7 @@ func playGame() {
 			break
 		}
 
-		// Verificar empate (después de cada movimiento)
+		// Check for tie (after each move)
 		if board.IsFull() {
 			board.Print()
 			fmt.Println("🤝 ¡Es un empate!")
@@ -95,7 +95,7 @@ func playGame() {
 			break
 		}
 
-		// Cambiar turno
+		// Switch turn
 		currentPlayerIsHuman = !currentPlayerIsHuman
 	}
 }
